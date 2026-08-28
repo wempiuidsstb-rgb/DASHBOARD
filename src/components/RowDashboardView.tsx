@@ -118,53 +118,6 @@ export const RowDashboardView: React.FC<RowDashboardViewProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* Top Portal Navigation Bar */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 px-4 flex flex-wrap items-center justify-between gap-3 text-white shadow-sm">
-        <div className="flex items-center gap-3">
-          {onNavigateHome && (
-            <button
-              type="button"
-              onClick={onNavigateHome}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition-all border border-slate-700 hover:border-slate-600 shadow-xs"
-            >
-              <Home className="w-3.5 h-3.5 text-blue-400" />
-              <span>Menu Utama</span>
-            </button>
-          )}
-
-          <span className="text-slate-600 hidden sm:inline">&bull;</span>
-
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
-            <span className="text-xs font-black tracking-wide text-white">
-              Dashboard Realisasi LM (Perampalan & Penebangan ROW)
-            </span>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2.5">
-          {onSwitchToGardu && (
-            <button
-              type="button"
-              onClick={onSwitchToGardu}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 hover:text-white text-xs font-bold transition-all border border-blue-500/30 shadow-xs"
-            >
-              <Zap className="w-3.5 h-3.5 text-blue-400" />
-              <span>Pindah ke Dashboard Gardu</span>
-            </button>
-          )}
-
-          <button
-            onClick={onRefresh}
-            disabled={isLoading}
-            className="p-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors border border-slate-700 disabled:opacity-50"
-            title="Refresh Data Sheet"
-          >
-            <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
-          </button>
-        </div>
-      </div>
-
       {/* Header Banner */}
       <div className="bento-card bg-linear-to-r from-emerald-900 via-teal-900 to-slate-900 text-white border-none p-6 sm:p-7 relative overflow-hidden">
         <div className="absolute right-0 top-0 translate-x-12 -translate-y-12 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>

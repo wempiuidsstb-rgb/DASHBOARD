@@ -3,6 +3,7 @@ import { GarduRecord, FilterState, ActiveTab, RowRecord, AppView } from './types
 import { fetchGarduData, filterRecords, calculateMetrics, exportToCSV, getLastDataSource } from './data/garduService';
 import { fetchRowData, getLastRowDataSource, calculateRowMetrics, exportRowToCSV } from './data/rowService';
 import { exportToPDF } from './utils/pdfExport';
+import { NavigationMenu } from './components/NavigationMenu';
 import { LandingPage } from './components/LandingPage';
 import { Navbar } from './components/Navbar';
 import { MetricCards } from './components/MetricCards';
@@ -120,7 +121,7 @@ export default function App() {
     return calculateMetrics(filteredRecords);
   }, [filteredRecords]);
 
-  // Global ROW Metrics for Landing Page
+  // Global ROW Metrics
   const globalRowMetrics = useMemo(() => {
     return calculateRowMetrics(rowRecords);
   }, [rowRecords]);
@@ -158,215 +159,230 @@ export default function App() {
     }, 60);
   };
 
-  // If in Landing Page view
-  if (currentView === 'landing') {
-    return (
-      <LandingPage
+  return (
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col antialiased selection:bg-blue-500 selection:text-white">
+      {/* Universal Sticky Navigation Menu to switch between Landing Page & Dashboards */}
+      <NavigationMenu
+        currentView={currentView}
         onSelectView={(view) => setCurrentView(view)}
-        garduMetrics={metrics}
-        garduLoading={isLoading}
-        rowRecordCount={rowRecords.length}
+        garduCount={metrics.total || records.length || 5200}
         rowKmsTotal={globalRowMetrics.totalRampalKms}
         rowBtgTotal={globalRowMetrics.totalTebangBtg}
-        rowLoading={isLoadingRow}
         onRefreshAll={() => {
           loadData(true);
           loadRowData(true);
         }}
-      />
-    );
-  }
-
-  // If in ROW (Realisasi LM / Rampal & Tebang) view
-  if (currentView === 'row') {
-    return (
-      <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col antialiased">
-        <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <RowDashboardView
-            records={rowRecords}
-            isLoading={isLoadingRow}
-            dataSource={rowDataSource}
-            onRefresh={() => loadRowData(true)}
-            onNavigateHome={() => setCurrentView('landing')}
-            onSwitchToGardu={() => setCurrentView('gardu')}
-          />
-        </main>
-
-        <footer className="bg-white border-t border-slate-200/80 py-5 text-xs text-slate-500">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center space-x-2.5">
-              <button
-                type="button"
-                onClick={() => setCurrentView('landing')}
-                className="font-bold text-slate-800 hover:text-emerald-600 flex items-center gap-1.5 transition-colors"
-              >
-                <ArrowLeft className="w-3.5 h-3.5" />
-                <span>Kembali ke Menu Utama</span>
-              </button>
-              <span className="text-slate-300">|</span>
-              <span className="font-medium text-slate-700">
-                PT PLN (Persero) UP3 Bulukumba &bull; Dashboard Realisasi LM
-              </span>
-            </div>
-
-            <div className="flex items-center space-x-4">
-              <a
-                href={SPREADSHEET_ROW_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-slate-700 hover:text-emerald-600 font-semibold transition-colors"
-              >
-                <Trees className="w-3.5 h-3.5 text-emerald-500" />
-                <span>Spreadsheet REKAP UP3 (ROW)</span>
-                <ExternalLink className="w-3 h-3 text-slate-400" />
-              </a>
-            </div>
-          </div>
-        </footer>
-      </div>
-    );
-  }
-
-  // Otherwise: Dashboard Pengukuran Gardu view
-  return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col antialiased">
-      {/* Top Navigation */}
-      <Navbar
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        metrics={metrics}
+        isLoading={isLoading || isLoadingRow}
         dataSource={dataSource}
-        onExport={handleExport}
-        onExportPDF={handleExportPDF}
-        onRefresh={() => loadData(true)}
-        isLoading={isLoading}
-        isExportingPDF={isExportingPDF}
-        onNavigateHome={() => setCurrentView('landing')}
-        onSwitchToRow={() => setCurrentView('row')}
       />
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-        {/* Loading Spinner */}
-        {isLoading && (
-          <div className="bento-card p-12 text-center space-y-3">
-            <RefreshCw className="w-8 h-8 text-blue-600 animate-spin mx-auto" />
-            <div className="text-base font-bold text-slate-900">Memuat Data Pengukuran Gardu...</div>
-            <p className="text-xs text-slate-400">
-              Mengunduh & memproses 5.200+ unit gardu via Google Sheets CSV stream
-            </p>
-          </div>
-        )}
+      {/* VIEW 1: LANDING PAGE (PORTAL MENU UTAMA) */}
+      {currentView === 'landing' && (
+        <LandingPage
+          onSelectView={(view) => setCurrentView(view)}
+          garduMetrics={metrics}
+          garduLoading={isLoading}
+          rowRecordCount={rowRecords.length}
+          rowKmsTotal={globalRowMetrics.totalRampalKms}
+          rowBtgTotal={globalRowMetrics.totalTebangBtg}
+          rowLoading={isLoadingRow}
+          onRefreshAll={() => {
+            loadData(true);
+            loadRowData(true);
+          }}
+        />
+      )}
 
-        {/* Error Alert */}
-        {error && !isLoading && (
-          <div className="bento-card p-4 bg-red-50/80 border-red-200 text-red-800 text-sm flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <AlertCircle className="w-5 h-5 text-red-600" />
-              <span>{error}</span>
-            </div>
-            <button
-              onClick={() => loadData(true)}
-              className="px-3.5 py-1.5 bg-red-600 text-white text-xs font-semibold rounded-xl hover:bg-red-700 transition-colors shadow-xs"
-            >
-              Coba Lagi
-            </button>
-          </div>
-        )}
-
-        {!isLoading && !error && (
-          <>
-            {/* KPI Metric Cards */}
-            <MetricCards
-              metrics={metrics}
-              filters={filters}
-              onFilterChange={setFilters}
+      {/* VIEW 2: DASHBOARD REALISASI LM (ROW / RAMPAL & TEBANG) */}
+      {currentView === 'row' && (
+        <div className="flex-1 flex flex-col">
+          <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <RowDashboardView
+              records={rowRecords}
+              isLoading={isLoadingRow}
+              dataSource={rowDataSource}
+              onRefresh={() => loadRowData(true)}
+              onNavigateHome={() => setCurrentView('landing')}
+              onSwitchToGardu={() => setCurrentView('gardu')}
             />
+          </main>
 
-            {/* Filter Bar */}
-            <FilterBar
-              filters={filters}
-              onFilterChange={setFilters}
-              ulpList={ulpList}
-              penyulangList={penyulangList}
-              kapasitasList={kapasitasList}
-              filteredCount={filteredRecords.length}
-              totalCount={records.length}
-            />
+          <footer className="bg-white border-t border-slate-200/80 py-5 text-xs text-slate-500">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex items-center space-x-2.5">
+                <button
+                  type="button"
+                  onClick={() => setCurrentView('landing')}
+                  className="font-bold text-slate-800 hover:text-emerald-600 flex items-center gap-1.5 transition-colors"
+                >
+                  <ArrowLeft className="w-3.5 h-3.5" />
+                  <span>Kembali ke Menu Utama</span>
+                </button>
+                <span className="text-slate-300">|</span>
+                <span className="font-medium text-slate-700">
+                  PT PLN (Persero) UP3 Bulukumba &bull; Dashboard Realisasi LM (ROW)
+                </span>
+              </div>
 
-            {/* Active Tab View */}
-            <div className="transition-all duration-200">
-              {activeTab === 'map' && (
-                <MapView
-                  records={filteredRecords}
-                  onSelectGardu={handleSelectGardu}
-                  selectedGarduId={highlightedGarduId}
-                />
-              )}
-
-              {activeTab === 'analytics' && (
-                <AnalyticsView
-                  records={filteredRecords}
-                  onSelectGardu={handleSelectGardu}
-                />
-              )}
-
-              {activeTab === 'table' && (
-                <TableView
-                  records={filteredRecords}
-                  onSelectGardu={handleSelectGardu}
-                  onLocateOnMap={handleLocateOnMap}
-                  onExportPDF={handleExportPDF}
-                  isExportingPDF={isExportingPDF}
-                />
-              )}
-
-              {activeTab === 'priority' && (
-                <PriorityView
-                  records={filteredRecords}
-                  onSelectGardu={handleSelectGardu}
-                  onLocateOnMap={handleLocateOnMap}
-                  onExportPDF={handleExportPDF}
-                  isExportingPDF={isExportingPDF}
-                />
-              )}
+              <div className="flex items-center space-x-4">
+                <a
+                  href={SPREADSHEET_ROW_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-slate-700 hover:text-emerald-600 font-semibold transition-colors"
+                >
+                  <Trees className="w-3.5 h-3.5 text-emerald-500" />
+                  <span>Spreadsheet REKAP UP3 (ROW)</span>
+                  <ExternalLink className="w-3 h-3 text-slate-400" />
+                </a>
+              </div>
             </div>
-          </>
-        )}
-      </main>
-
-      {/* Footer */}
-      <footer className="bg-white border-t border-slate-200/80 py-5 text-xs text-slate-500">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center space-x-2.5">
-            <button
-              type="button"
-              onClick={() => setCurrentView('landing')}
-              className="font-bold text-slate-800 hover:text-blue-600 flex items-center gap-1.5 transition-colors"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" />
-              <span>Kembali ke Menu Utama</span>
-            </button>
-            <span className="text-slate-300">|</span>
-            <span className="font-medium text-slate-700">
-              <strong className="text-slate-900 font-bold">PLN UP3 Bulukumba</strong> &bull; Dashboard Pengukuran Gardu
-            </span>
-          </div>
-
-          <div className="flex items-center space-x-4 flex-wrap">
-            <a
-              href={SPREADSHEET_GARDU_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-slate-700 hover:text-blue-600 font-semibold transition-colors"
-            >
-              <Database className="w-3.5 h-3.5 text-blue-500" />
-              <span>Spreadsheet FORM (Gardu)</span>
-              <ExternalLink className="w-3 h-3 text-slate-400" />
-            </a>
-          </div>
+          </footer>
         </div>
-      </footer>
+      )}
+
+      {/* VIEW 3: DASHBOARD PENGUKURAN GARDU */}
+      {currentView === 'gardu' && (
+        <div className="flex-1 flex flex-col">
+          {/* Gardu Sub-Tabs and Controls */}
+          <Navbar
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            metrics={metrics}
+            dataSource={dataSource}
+            onExport={handleExport}
+            onExportPDF={handleExportPDF}
+            onRefresh={() => loadData(true)}
+            isLoading={isLoading}
+            isExportingPDF={isExportingPDF}
+            onNavigateHome={() => setCurrentView('landing')}
+            onSwitchToRow={() => setCurrentView('row')}
+          />
+
+          {/* Main Content Area */}
+          <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+            {/* Loading Spinner */}
+            {isLoading && (
+              <div className="bento-card p-12 text-center space-y-3">
+                <RefreshCw className="w-8 h-8 text-blue-600 animate-spin mx-auto" />
+                <div className="text-base font-bold text-slate-900">Memuat Data Pengukuran Gardu...</div>
+                <p className="text-xs text-slate-400">
+                  Mengunduh & memproses 5.200+ unit gardu via Google Sheets CSV stream
+                </p>
+              </div>
+            )}
+
+            {/* Error Alert */}
+            {error && !isLoading && (
+              <div className="bento-card p-4 bg-red-50/80 border-red-200 text-red-800 text-sm flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <AlertCircle className="w-5 h-5 text-red-600" />
+                  <span>{error}</span>
+                </div>
+                <button
+                  onClick={() => loadData(true)}
+                  className="px-3.5 py-1.5 bg-red-600 text-white text-xs font-semibold rounded-xl hover:bg-red-700 transition-colors shadow-xs"
+                >
+                  Coba Lagi
+                </button>
+              </div>
+            )}
+
+            {!isLoading && !error && (
+              <>
+                {/* KPI Metric Cards */}
+                <MetricCards
+                  metrics={metrics}
+                  filters={filters}
+                  onFilterChange={setFilters}
+                />
+
+                {/* Filter Bar */}
+                <FilterBar
+                  filters={filters}
+                  onFilterChange={setFilters}
+                  ulpList={ulpList}
+                  penyulangList={penyulangList}
+                  kapasitasList={kapasitasList}
+                  filteredCount={filteredRecords.length}
+                  totalCount={records.length}
+                />
+
+                {/* Active Tab View */}
+                <div className="transition-all duration-200">
+                  {activeTab === 'map' && (
+                    <MapView
+                      records={filteredRecords}
+                      onSelectGardu={handleSelectGardu}
+                      selectedGarduId={highlightedGarduId}
+                    />
+                  )}
+
+                  {activeTab === 'analytics' && (
+                    <AnalyticsView
+                      records={filteredRecords}
+                      onSelectGardu={handleSelectGardu}
+                    />
+                  )}
+
+                  {activeTab === 'table' && (
+                    <TableView
+                      records={filteredRecords}
+                      onSelectGardu={handleSelectGardu}
+                      onLocateOnMap={handleLocateOnMap}
+                      onExportPDF={handleExportPDF}
+                      isExportingPDF={isExportingPDF}
+                    />
+                  )}
+
+                  {activeTab === 'priority' && (
+                    <PriorityView
+                      records={filteredRecords}
+                      onSelectGardu={handleSelectGardu}
+                      onLocateOnMap={handleLocateOnMap}
+                      onExportPDF={handleExportPDF}
+                      isExportingPDF={isExportingPDF}
+                    />
+                  )}
+                </div>
+              </>
+            )}
+          </main>
+
+          {/* Footer */}
+          <footer className="bg-white border-t border-slate-200/80 py-5 text-xs text-slate-500">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex items-center space-x-2.5">
+                <button
+                  type="button"
+                  onClick={() => setCurrentView('landing')}
+                  className="font-bold text-slate-800 hover:text-blue-600 flex items-center gap-1.5 transition-colors"
+                >
+                  <ArrowLeft className="w-3.5 h-3.5" />
+                  <span>Kembali ke Menu Utama</span>
+                </button>
+                <span className="text-slate-300">|</span>
+                <span className="font-medium text-slate-700">
+                  <strong className="text-slate-900 font-bold">PLN UP3 Bulukumba</strong> &bull; Dashboard Pengukuran Gardu
+                </span>
+              </div>
+
+              <div className="flex items-center space-x-4 flex-wrap">
+                <a
+                  href={SPREADSHEET_GARDU_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-slate-700 hover:text-blue-600 font-semibold transition-colors"
+                >
+                  <Database className="w-3.5 h-3.5 text-blue-500" />
+                  <span>Spreadsheet FORM (Gardu)</span>
+                  <ExternalLink className="w-3 h-3 text-slate-400" />
+                </a>
+              </div>
+            </div>
+          </footer>
+        </div>
+      )}
 
       {/* Single Gardu Inspection Modal */}
       {selectedGardu && (

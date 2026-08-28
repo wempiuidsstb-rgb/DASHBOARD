@@ -41,36 +41,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   rowLoading,
 }) => {
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col justify-between selection:bg-blue-500 selection:text-white">
-      {/* Top Brand Bar */}
-      <header className="border-b border-slate-800 bg-slate-900/90 backdrop-blur-md sticky top-0 z-30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center font-black text-white text-base shadow-lg shadow-blue-500/25">
-              PLN
-            </div>
-            <div>
-              <div className="text-sm font-black text-white tracking-wide flex items-center gap-2">
-                PT PLN (PERSERO) UID SULSELRABAR
-                <span className="text-[10px] font-bold uppercase tracking-wider bg-blue-500/20 text-blue-300 border border-blue-400/30 px-2 py-0.5 rounded-md">
-                  UP3 Bulukumba
-                </span>
-              </div>
-              <p className="text-[11px] text-slate-400">
-                Pusat Sistem Monitoring & Analitik Distribusi Ketenagalistrikan
-              </p>
-            </div>
-          </div>
-
-          <div className="hidden sm:flex items-center space-x-3 text-xs text-slate-400">
-            <span className="flex items-center gap-1.5 bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              Live Google Sheets Sync
-            </span>
-          </div>
-        </div>
-      </header>
-
+    <div className="min-h-[calc(100vh-4rem)] bg-slate-900 text-slate-100 flex flex-col justify-between selection:bg-blue-500 selection:text-white">
       {/* Main Hero Section */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 flex flex-col justify-center">
         {/* Hero Title & Subtitle */}
