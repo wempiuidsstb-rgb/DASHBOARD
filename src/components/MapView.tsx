@@ -61,8 +61,29 @@ export const MapView: React.FC<MapViewProps> = ({
 
     mapInstanceRef.current = map;
 
+    // Invalidate size once DOM stabilizes
+    const resizeTimer = setTimeout(() => {
+      if (mapInstanceRef.current) {
+        try {
+          mapInstanceRef.current.invalidateSize();
+        } catch (_) {}
+      }
+    }, 150);
+
     return () => {
-      map.remove();
+      clearTimeout(resizeTimer);
+      if (highlightCircleRef.current) {
+        try {
+          highlightCircleRef.current.remove();
+        } catch (_) {}
+        highlightCircleRef.current = null;
+      }
+      try {
+        map.stop();
+        map.remove();
+      } catch (err) {
+        console.warn('Map cleanup error:', err);
+      }
       mapInstanceRef.current = null;
     };
   }, []);
@@ -207,7 +228,10 @@ export const MapView: React.FC<MapViewProps> = ({
 
     // Fit map to bounds if points exist
     if (bounds.isValid()) {
-      map.fitBounds(bounds, { padding: [40, 40], maxZoom: 14 });
+      try {
+        map.stop();
+        map.fitBounds(bounds, { padding: [40, 40], maxZoom: 14, animate: false });
+      } catch (_) {}
     }
   }, [geoRecords, onSelectGardu]);
 
@@ -216,7 +240,9 @@ export const MapView: React.FC<MapViewProps> = ({
     const map = mapInstanceRef.current;
     if (!map || !selectedGarduId) {
       if (highlightCircleRef.current) {
-        highlightCircleRef.current.remove();
+        try {
+          highlightCircleRef.current.remove();
+        } catch (_) {}
         highlightCircleRef.current = null;
       }
       return;
@@ -224,18 +250,29 @@ export const MapView: React.FC<MapViewProps> = ({
 
     const target = geoRecords.find((r) => r.id === selectedGarduId || r.gardu === selectedGarduId);
     if (target && target.lat !== null && target.lng !== null) {
-      map.flyTo([target.lat, target.lng], 15, { duration: 1.2 });
+      try {
+        map.stop();
+        map.flyTo([target.lat, target.lng], 15, { duration: 0.8 });
+      } catch (_) {
+        try {
+          map.setView([target.lat, target.lng], 15);
+        } catch (_) {}
+      }
 
       if (highlightCircleRef.current) {
-        highlightCircleRef.current.setLatLng([target.lat, target.lng]);
+        try {
+          highlightCircleRef.current.setLatLng([target.lat, target.lng]);
+        } catch (_) {}
       } else {
-        highlightCircleRef.current = L.circleMarker([target.lat, target.lng], {
-          radius: 14,
-          fillColor: 'transparent',
-          color: '#f59e0b',
-          weight: 3,
-          dashArray: '4, 4',
-        }).addTo(map);
+        try {
+          highlightCircleRef.current = L.circleMarker([target.lat, target.lng], {
+            radius: 14,
+            fillColor: 'transparent',
+            color: '#f59e0b',
+            weight: 3,
+            dashArray: '4, 4',
+          }).addTo(map);
+        } catch (_) {}
       }
     }
   }, [selectedGarduId, geoRecords]);
@@ -259,7 +296,14 @@ export const MapView: React.FC<MapViewProps> = ({
     setMapSearch('');
     setSearchMatches([]);
     if (rec.lat && rec.lng && mapInstanceRef.current) {
-      mapInstanceRef.current.flyTo([rec.lat, rec.lng], 16, { duration: 1 });
+      try {
+        mapInstanceRef.current.stop();
+        mapInstanceRef.current.flyTo([rec.lat, rec.lng], 16, { duration: 0.8 });
+      } catch (_) {
+        try {
+          mapInstanceRef.current.setView([rec.lat, rec.lng], 16);
+        } catch (_) {}
+      }
       onSelectGardu(rec);
     }
   };
@@ -271,7 +315,10 @@ export const MapView: React.FC<MapViewProps> = ({
       if (r.lat && r.lng) bounds.extend([r.lat, r.lng]);
     });
     if (bounds.isValid()) {
-      mapInstanceRef.current.fitBounds(bounds, { padding: [40, 40] });
+      try {
+        mapInstanceRef.current.stop();
+        mapInstanceRef.current.fitBounds(bounds, { padding: [40, 40], animate: true });
+      } catch (_) {}
     }
   };
 

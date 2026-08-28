@@ -6,6 +6,7 @@ interface NavbarProps {
   activeTab: ActiveTab;
   setActiveTab: (tab: ActiveTab) => void;
   metrics: DashboardMetrics;
+  dataSource?: 'live_google_sheets_csv' | 'local_cache';
   onExport: () => void;
   onExportPDF: () => void;
   onRefresh: () => void;
@@ -17,6 +18,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   activeTab,
   setActiveTab,
   metrics,
+  dataSource = 'live_google_sheets_csv',
   onExport,
   onExportPDF,
   onRefresh,
@@ -67,7 +69,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 Dashboard Pengukuran Gardu
               </h1>
               <p className="text-xs text-slate-500 hidden sm:block">
-                Monitoring Real-time, Analisis Pembebanan & Koordinat Geografis
+                Monitoring Real-time (Google Sheets Live CSV) &bull; UP3 Bulukumba
               </p>
             </div>
           </div>
@@ -75,9 +77,18 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Right Bento Status and Actions */}
           <div className="flex items-center justify-between sm:justify-end gap-3 flex-wrap">
             {/* Live System Status Pill */}
-            <div className="bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-2 shadow-xs">
+            <div
+              title={
+                dataSource === 'live_google_sheets_csv'
+                  ? 'Terhubung langsung ke Google Sheets Form (Streaming CSV)'
+                  : 'Menggunakan dataset cadangan'
+              }
+              className="bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-2 shadow-xs"
+            >
               <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-              <span>Sistem Aktif</span>
+              <span>
+                {dataSource === 'live_google_sheets_csv' ? 'Google Sheets Live' : 'Data Cadangan'}
+              </span>
             </div>
 
             {/* Live Timestamp */}

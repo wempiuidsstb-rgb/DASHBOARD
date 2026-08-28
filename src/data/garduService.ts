@@ -1,22 +1,161 @@
-import { GarduRecord, FilterState, DashboardMetrics } from '../types';
+import { GarduRecord, FilterState, DashboardMetrics, LoadStatus } from '../types';
+import Papa from 'papaparse';
+
+const GOOGLE_SHEETS_CSV_URL =
+  'https://docs.google.com/spreadsheets/d/1yKABzadJ3umWnIG0d6vR8y4mZ3LopnU9GssvJf7_N18/gviz/tq?tqx=out:csv&sheet=FORM';
+const BACKUP_LOCAL_JSON_URL = '/data/gardu_data.json';
 
 let cachedRecords: GarduRecord[] | null = null;
+let lastDataSource: 'live_google_sheets_csv' | 'local_cache' = 'live_google_sheets_csv';
 
-export async function fetchGarduData(): Promise<GarduRecord[]> {
-  if (cachedRecords) {
+export function getLastDataSource(): 'live_google_sheets_csv' | 'local_cache' {
+  return lastDataSource;
+}
+
+function parseIndoNumber(val: any): number {
+  if (val === null || val === undefined || val === '') return 0;
+  if (typeof val === 'number') return isNaN(val) ? 0 : val;
+  const cleaned = String(val).replace(/%/g, '').replace(/\s/g, '').replace(/,/g, '.');
+  const num = parseFloat(cleaned);
+  return isNaN(num) ? 0 : num;
+}
+
+function parseCoords(longlatStr: any): { lat: number | null; lng: number | null } {
+  if (!longlatStr) return { lat: null, lng: null };
+  const str = String(longlatStr).trim();
+  if (!str || str.toLowerCase() === 'null' || str === '-') return { lat: null, lng: null };
+
+  const parts = str.split(',');
+  if (parts.length >= 2) {
+    const lat = parseFloat(parts[0].trim());
+    const lng = parseFloat(parts[1].trim());
+    if (!isNaN(lat) && !isNaN(lng) && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
+      return { lat, lng };
+    }
+  }
+  return { lat: null, lng: null };
+}
+
+function determineLoadStatus(indexStatus: any, bebanPct: number): LoadStatus {
+  const s = String(indexStatus || '').trim().toUpperCase();
+  if (s.includes('OVERLOAD') || s === 'OVER') return 'OVERLOAD';
+  if (s.includes('UNDERLOAD') || s === 'UNDER') return 'UNDERLOAD';
+  if (s.includes('NORMAL')) return 'NORMAL';
+
+  if (bebanPct > 80) return 'OVERLOAD';
+  if (bebanPct < 40) return 'UNDERLOAD';
+  return 'NORMAL';
+}
+
+function normalizeUlp(ulpRaw: string): string {
+  const trimmed = ulpRaw.trim().toUpperCase();
+  if (!trimmed) return '';
+  if (trimmed.startsWith('ULP ')) return trimmed;
+  return `ULP ${trimmed}`;
+}
+
+export function parseGoogleSheetsCsv(csvText: string): GarduRecord[] {
+  const parsed = Papa.parse<Record<string, string>>(csvText, {
+    header: true,
+    skipEmptyLines: 'greedy',
+  });
+
+  const rows = parsed.data;
+  const records: GarduRecord[] = [];
+
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i];
+    const gardu = String(row['NAMA GARDU'] || row['Nama Gardu'] || '').trim();
+    if (!gardu) continue; // skip empty rows
+
+    const coords = parseCoords(row['LONGLAT'] || row['Longlat'] || row['Koordinat']);
+    const bebanPct = parseIndoNumber(row['% PEMBEBANAN'] || row['% Pembebanan']);
+    const unbalancePct = parseIndoNumber(row['%UNBALANCE'] || row['% UNBALANCE'] || row['%Unbalance']);
+    const statusBeban = determineLoadStatus(row['INDEX PEMBEBANAN TRAFO'] || row['Index Pembebanan'], bebanPct);
+    const id = String(row['ID'] || '').trim() || `gardu-${i}-${gardu}`;
+    const ulpRaw = String(row['ULP'] || row['Ulp'] || '').trim();
+
+    records.push({
+      id,
+      timestamp: String(row['TIMESTAMP'] || '').trim(),
+      date: String(row['TANGGAL'] || '').trim(),
+      gardu,
+      up3: String(row['UP3'] || 'UP3 BULUKUMBA').trim(),
+      ulp: normalizeUlp(ulpRaw),
+      penyulang: String(row['PENYULANG'] || '').trim(),
+      zona: String(row['ZONA PROTEKSI'] || '').trim(),
+      section: String(row['SECTION'] || '').trim(),
+      kapasitas: parseIndoNumber(row['KAPASITAS']),
+      fasa: parseIndoNumber(row['FASA']) || 3,
+      lat: coords.lat,
+      lng: coords.lng,
+      ir: parseIndoNumber(row['IR']),
+      is: parseIndoNumber(row['IS']),
+      it: parseIndoNumber(row['IT']),
+      in: parseIndoNumber(row['IN']),
+      vfn: parseIndoNumber(row['VFN']),
+      vff: parseIndoNumber(row['VFF']),
+      beban_kva: parseIndoNumber(row['PEMBILANG PEMBEBANAN']),
+      beban_pct: Math.round(bebanPct * 10) / 10,
+      unbalance_pct: Math.round(unbalancePct * 10) / 10,
+      avg_i: parseIndoNumber(row['AVG Irst']),
+      status_beban: statusBeban,
+      kebocoran_minyak: String(row['(1) KEBOCORAN MINYAK TRAFO'] || '').trim(),
+      kondisi_fisik: String(row['(2) KONDISI FISIK TRAFO'] || '').trim(),
+      pembumian: parseIndoNumber(row['(3) PEMBUMIAN TRAFO']),
+      kesesuaian_ampere: String(row['(4) KESESUAIAN AMPERE TRAFO'] || '').trim(),
+      kondisi_lvsb: String(row['(5) KONDISI LVSB/PHBTR'] || '').trim(),
+      arrester: String(row['(6) ARRESTER'] || '').trim(),
+      fco: String(row['(7) FCO'] || '').trim(),
+      petugas: String(row['NAMA PENGINPUT'] || '').trim(),
+      keterangan: String(row['KETERANGAN'] || '').trim(),
+      progress: String(row['PROGRESS'] || '').trim(),
+      tipe: String(row['KHUSUS / UMUM'] || 'UMUM').trim(),
+    });
+  }
+
+  return records;
+}
+
+export async function fetchGarduData(forceRefresh = false): Promise<GarduRecord[]> {
+  if (!forceRefresh && cachedRecords && cachedRecords.length > 0) {
     return cachedRecords;
   }
 
+  // 1. Fetch CSV directly from Google Sheets (handles 5,000+ rows without JSON truncation)
   try {
-    const res = await fetch('/data/gardu_data.json');
+    const res = await fetch(GOOGLE_SHEETS_CSV_URL, {
+      cache: forceRefresh ? 'reload' : 'default',
+    });
+
+    if (res.ok) {
+      const csvText = await res.text();
+      if (csvText && csvText.includes('NAMA GARDU')) {
+        const records = parseGoogleSheetsCsv(csvText);
+        if (records.length > 0) {
+          cachedRecords = records;
+          lastDataSource = 'live_google_sheets_csv';
+          return records;
+        }
+      }
+    }
+    console.warn('Google Sheets CSV response did not contain expected data, falling back to local copy...');
+  } catch (err) {
+    console.warn('Google Sheets CSV fetch error, falling back to local dataset:', err);
+  }
+
+  // 2. Fallback to local dataset if offline or network failure
+  try {
+    const res = await fetch(BACKUP_LOCAL_JSON_URL);
     if (!res.ok) {
-      throw new Error(`Gagal memuat data: ${res.statusText}`);
+      throw new Error(`Gagal memuat data lokal: ${res.statusText}`);
     }
     const data: GarduRecord[] = await res.json();
     cachedRecords = data;
+    lastDataSource = 'local_cache';
     return data;
   } catch (err) {
-    console.error('Error fetching gardu data:', err);
+    console.error('Fatal: Gagal memuat data gardu:', err);
     throw err;
   }
 }

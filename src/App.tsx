@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { GarduRecord, FilterState, ActiveTab } from './types';
-import { fetchGarduData, filterRecords, calculateMetrics, exportToCSV } from './data/garduService';
+import { fetchGarduData, filterRecords, calculateMetrics, exportToCSV, getLastDataSource } from './data/garduService';
 import { exportToPDF } from './utils/pdfExport';
 import { Navbar } from './components/Navbar';
 import { MetricCards } from './components/MetricCards';
@@ -19,6 +19,7 @@ export default function App() {
   const [records, setRecords] = useState<GarduRecord[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [dataSource, setDataSource] = useState<'live_google_sheets_csv' | 'local_cache'>('live_google_sheets_csv');
 
   const [activeTab, setActiveTab] = useState<ActiveTab>('map');
   const [selectedGardu, setSelectedGardu] = useState<GarduRecord | null>(null);
@@ -37,15 +38,16 @@ export default function App() {
 
   // Load data on mount
   useEffect(() => {
-    loadData();
+    loadData(false);
   }, []);
 
-  const loadData = async () => {
+  const loadData = async (forceRefresh = false) => {
     setIsLoading(true);
     setError(null);
     try {
-      const data = await fetchGarduData();
+      const data = await fetchGarduData(forceRefresh);
       setRecords(data);
+      setDataSource(getLastDataSource());
     } catch (err: any) {
       setError(err?.message || 'Gagal memuat dataset hasil pengukuran gardu.');
     } finally {
@@ -129,9 +131,10 @@ export default function App() {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         metrics={metrics}
+        dataSource={dataSource}
         onExport={handleExport}
         onExportPDF={handleExportPDF}
-        onRefresh={loadData}
+        onRefresh={() => loadData(true)}
         isLoading={isLoading}
         isExportingPDF={isExportingPDF}
       />
@@ -143,7 +146,9 @@ export default function App() {
           <div className="bento-card p-12 text-center space-y-3">
             <RefreshCw className="w-8 h-8 text-blue-600 animate-spin mx-auto" />
             <div className="text-base font-bold text-slate-900">Memuat Data Pengukuran Gardu...</div>
-            <p className="text-xs text-slate-400">Sedang memproses 5.228 unit gardu dan koordinat GPS</p>
+            <p className="text-xs text-slate-400">
+              Mengunduh & memproses 5.200+ unit gardu via Google Sheets CSV stream
+            </p>
           </div>
         )}
 
