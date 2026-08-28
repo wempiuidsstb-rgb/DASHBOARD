@@ -1,0 +1,27 @@
+{
+  "total": 5228,
+  "with_coords": 3322,
+  "overload": 1155,
+  "normal": 1944,
+  "underload": 2129,
+  "ulps": {
+    "ULP PANRITA LOPI": 1428,
+    "ULP SINJAI": 1148,
+    "ULP SELAYAR": 267,
+    "ULP KALUMPANG": 711,
+    "ULP BANTAENG": 657,
+    "ULP JENEPONTO": 653,
+    "ULP TANETE": 364
+  },
+  "penyulang_count": 42,
+  "capacities": {
+    "25": 1202,
+    "16": 76,
+    "50": 2275,
+    "160": 503,
+    "15": 77,
+    "200": 127,
+    "100": 879,
+    "250": 89
+  }
+}
