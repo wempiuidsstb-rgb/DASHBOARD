@@ -63,3 +63,36 @@ export interface DashboardMetrics {
 }
 
 export type ActiveTab = 'map' | 'analytics' | 'table' | 'priority';
+
+export type AppView = 'landing' | 'gardu' | 'row';
+
+export interface RowRecord {
+  id: string;
+  tanggal: string;
+  ulp: string;
+  ulpRaw: string;
+  section: string;
+  rampalKms: number;
+  tebangBtg: number;
+  tim: string;
+}
+
+export interface RowFilterState {
+  search: string;
+  ulp: string;
+  tim: string;
+  bulan: string;
+  activityType: 'ALL' | 'RAMPAL_ONLY' | 'TEBANG_ONLY' | 'BOTH';
+}
+
+export interface RowDashboardMetrics {
+  totalKegiatan: number;
+  totalRampalKms: number;
+  totalTebangBtg: number;
+  avgRampalPerKegiatan: number;
+  avgTebangPerKegiatan: number;
+  ulpStats: { ulp: string; kms: number; btg: number; count: number }[];
+  timStats: { tim: string; count: number; kms: number; btg: number; percentage: number }[];
+  monthlyStats: { bulan: string; kms: number; btg: number; count: number }[];
+  topSections: { section: string; ulp: string; kms: number; btg: number; count: number }[];
+}

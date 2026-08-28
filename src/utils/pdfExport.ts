@@ -1,6 +1,27 @@
-import jsPDF from 'jspdf';
+import { jsPDF as jsPDFNamed } from 'jspdf';
+import * as jsPDFModule from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { GarduRecord, FilterState, DashboardMetrics } from '../types';
+
+function createPdfInstance(options: any) {
+  const Constructor: any =
+    (typeof jsPDFNamed === 'function' ? jsPDFNamed : null) ||
+    (typeof (jsPDFModule as any).default === 'function' ? (jsPDFModule as any).default : null) ||
+    (typeof (jsPDFModule as any).jsPDF === 'function' ? (jsPDFModule as any).jsPDF : null) ||
+    (typeof window !== 'undefined' && (window as any).jspdf?.jsPDF ? (window as any).jspdf.jsPDF : null) ||
+    jsPDFNamed;
+  return new Constructor(options);
+}
+
+function applyAutoTable(doc: any, options: any) {
+  if (typeof autoTable === 'function') {
+    autoTable(doc, options);
+  } else if (typeof (autoTable as any)?.default === 'function') {
+    (autoTable as any).default(doc, options);
+  } else if (typeof (doc as any)?.autoTable === 'function') {
+    (doc as any).autoTable(options);
+  }
+}
 
 interface PDFExportOptions {
   records: GarduRecord[];
@@ -11,7 +32,7 @@ interface PDFExportOptions {
 
 export function exportToPDF({ records, filters, metrics, filename }: PDFExportOptions): void {
   // Create landscape A4 document for rich tabular representation
-  const doc = new jsPDF({
+  const doc = createPdfInstance({
     orientation: 'landscape',
     unit: 'mm',
     format: 'a4',
@@ -181,7 +202,7 @@ export function exportToPDF({ records, filters, metrics, filename }: PDFExportOp
   });
 
   // Table using autoTable
-  autoTable(doc, {
+  applyAutoTable(doc, {
     startY: 56,
     head: [
       [
@@ -292,7 +313,7 @@ export function exportToPDF({ records, filters, metrics, filename }: PDFExportOp
 }
 
 export function exportSingleGarduPDF(gardu: GarduRecord): void {
-  const doc = new jsPDF({
+  const doc = createPdfInstance({
     orientation: 'portrait',
     unit: 'mm',
     format: 'a4',
@@ -346,7 +367,7 @@ export function exportSingleGarduPDF(gardu: GarduRecord): void {
     ['Koordinat Geografis (GPS)', `${gardu.lat && gardu.lng ? `${gardu.lat}, ${gardu.lng}` : 'Belum terdata'}`, 'Zona Jaringan', `${gardu.zona || '-'}`],
   ];
 
-  autoTable(doc, {
+  applyAutoTable(doc, {
     startY: 63,
     head: [['Parameter Operasional', 'Nilai Terukur', 'Parameter Tambahan', 'Keterangan']],
     body: techData,
@@ -384,7 +405,7 @@ export function exportSingleGarduPDF(gardu: GarduRecord): void {
     ['Tanggal Pengukuran', `${gardu.timestamp || gardu.date || '-'}`],
   ];
 
-  autoTable(doc, {
+  applyAutoTable(doc, {
     startY: finalY + 8,
     head: [['Pemeriksaan Fisik & Visual', 'Status / Temuan di Lapangan']],
     body: visualData,

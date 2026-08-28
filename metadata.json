@@ -1,6 +1,6 @@
 {
   "name": "Dashboard Pengukuran Gardu",
-  "description": "Dashboard pemantauan dan analisis hasil pengukuran beban gardu distribusi dan pemetaan koordinat gardu UP3 Bulukumba.",
+  "description": "Dashboard pemantauan dan analisis hasil pengukuran beban gardu distribusi, pemetaan koordinat GIS, serta rekapitulasi pekerjaan ROW (rampal & tebang pohon) UP3 Bulukumba.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

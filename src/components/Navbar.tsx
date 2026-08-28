@@ -1,6 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { ActiveTab, DashboardMetrics } from '../types';
-import { MapPin, BarChart3, Table as TableIcon, AlertTriangle, Download, RefreshCw, Zap, ShieldCheck, FileDown, Loader2 } from 'lucide-react';
+import {
+  MapPin,
+  BarChart3,
+  Table as TableIcon,
+  AlertTriangle,
+  Download,
+  RefreshCw,
+  Zap,
+  ShieldCheck,
+  FileDown,
+  Loader2,
+  Home,
+  Trees,
+} from 'lucide-react';
 
 interface NavbarProps {
   activeTab: ActiveTab;
@@ -12,6 +25,8 @@ interface NavbarProps {
   onRefresh: () => void;
   isLoading: boolean;
   isExportingPDF?: boolean;
+  onNavigateHome?: () => void;
+  onSwitchToRow?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -24,6 +39,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   onRefresh,
   isLoading,
   isExportingPDF = false,
+  onNavigateHome,
+  onSwitchToRow,
 }) => {
   const [currentDate, setCurrentDate] = useState<string>('');
 
@@ -48,6 +65,44 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header className="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-[0_1px_3px_rgba(0,0,0,0.03)]">
+      {/* Top Portal Breadcrumb / Switcher Bar */}
+      <div className="bg-slate-900 border-b border-slate-800 py-1.5 px-4 text-xs text-slate-300">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            {onNavigateHome && (
+              <button
+                type="button"
+                onClick={onNavigateHome}
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold transition-all border border-slate-700 hover:border-slate-600 shadow-xs"
+              >
+                <Home className="w-3.5 h-3.5 text-blue-400" />
+                <span>Menu Utama</span>
+              </button>
+            )}
+            <span className="text-slate-600 hidden sm:inline">&bull;</span>
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+              <span className="font-semibold text-white">
+                Dashboard Pengukuran Gardu Distribusi
+              </span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            {onSwitchToRow && (
+              <button
+                type="button"
+                onClick={onSwitchToRow}
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-950/80 hover:bg-emerald-900 text-emerald-300 hover:text-white font-bold transition-all border border-emerald-800 shadow-xs"
+              >
+                <Trees className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Pindah ke Dashboard Realisasi ROW</span>
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between py-3.5 gap-3">
           {/* Logo & Title */}
