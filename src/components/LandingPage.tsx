@@ -66,10 +66,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           {/* Card 1: Dashboard Pengukuran Gardu */}
           <div
             onClick={() => onSelectView('gardu')}
-            className="group relative bg-slate-800/80 hover:bg-slate-800 border-2 border-slate-700/80 hover:border-blue-500/80 rounded-2xl p-6 sm:p-8 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/10 cursor-pointer flex flex-col justify-between overflow-hidden"
+            className="group relative bg-slate-800 hover:bg-slate-750 border-2 border-slate-700 hover:border-blue-500 rounded-2xl p-6 sm:p-8 transition-all duration-300 hover:shadow-2xl cursor-pointer flex flex-col justify-between overflow-hidden"
           >
-            {/* Ambient Background Glow */}
-            <div className="absolute -right-12 -top-12 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl group-hover:bg-blue-500/20 transition-all pointer-events-none"></div>
 
             <div className="relative z-10 space-y-5">
               {/* Header Badge */}
@@ -108,7 +106,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   <span>Grafik Analitik Pembebanan & Arus Fasa R-S-T-N</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <FileSpreadsheet className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <FileSpreadsheet className="w-4 h-4 text-slate-400 shrink-0" />
                   <span>Ekspor Laporan Resmi Format PDF & CSV</span>
                 </div>
               </div>
@@ -151,25 +149,23 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           {/* Card 2: Dashboard Realisasi LM (Perampalan dan Penebangan) */}
           <div
             onClick={() => onSelectView('row')}
-            className="group relative bg-slate-800/80 hover:bg-slate-800 border-2 border-slate-700/80 hover:border-emerald-500/80 rounded-2xl p-6 sm:p-8 transition-all duration-300 hover:shadow-2xl hover:shadow-emerald-500/10 cursor-pointer flex flex-col justify-between overflow-hidden"
+            className="group relative bg-slate-800 hover:bg-slate-750 border-2 border-slate-700 hover:border-blue-500 rounded-2xl p-6 sm:p-8 transition-all duration-300 hover:shadow-2xl cursor-pointer flex flex-col justify-between overflow-hidden"
           >
-            {/* Ambient Background Glow */}
-            <div className="absolute -right-12 -top-12 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl group-hover:bg-emerald-500/20 transition-all pointer-events-none"></div>
 
             <div className="relative z-10 space-y-5">
               {/* Header Badge */}
               <div className="flex items-center justify-between">
-                <div className="w-14 h-14 rounded-2xl bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center group-hover:scale-105 group-hover:bg-emerald-600 group-hover:text-white transition-all shadow-md">
-                  <Trees className="w-7 h-7" />
+                <div className="w-14 h-14 rounded-2xl bg-slate-700 text-white border border-slate-600 flex items-center justify-center group-hover:scale-105 group-hover:bg-blue-600 transition-all shadow-md">
+                  <Trees className="w-7 h-7 text-blue-400 group-hover:text-white" />
                 </div>
-                <span className="text-xs font-bold px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-400/25">
+                <span className="text-xs font-bold px-3 py-1 rounded-full bg-slate-800 text-slate-200 border border-slate-700">
                   MODUL 02
                 </span>
               </div>
 
               {/* Title & Description */}
               <div>
-                <h2 className="text-xl sm:text-2xl font-black text-white group-hover:text-emerald-400 transition-colors">
+                <h2 className="text-xl sm:text-2xl font-black text-white group-hover:text-blue-400 transition-colors">
                   Dashboard Realisasi LM (Perampalan & Penebangan)
                 </h2>
                 <p className="text-xs sm:text-sm text-slate-300 mt-2 leading-relaxed">
@@ -181,19 +177,19 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               {/* Feature Highlights */}
               <div className="space-y-2 pt-2 border-t border-slate-700/60 text-xs text-slate-300">
                 <div className="flex items-center gap-2">
-                  <Scissors className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <Scissors className="w-4 h-4 text-slate-400 shrink-0" />
                   <span>Rekapitulasi Volume Perampalan (KMS) & Penebangan (Batang)</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <BarChart3 className="w-4 h-4 text-teal-400 shrink-0" />
+                  <BarChart3 className="w-4 h-4 text-slate-400 shrink-0" />
                   <span>Analisa Strategis, Evaluasi Hotspot & Rekomendasi Preventif</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Building2 className="w-4 h-4 text-indigo-400 shrink-0" />
+                  <Building2 className="w-4 h-4 text-slate-400 shrink-0" />
                   <span>Perbandingan Kinerja 7 ULP & Profil Radar Keseimbangan ROW</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Users className="w-4 h-4 text-amber-400 shrink-0" />
+                  <Users className="w-4 h-4 text-slate-400 shrink-0" />
                   <span>Efisiensi Tim (Yantek, Pegawai, Volume Base, KHS)</span>
                 </div>
               </div>
@@ -202,7 +198,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               <div className="grid grid-cols-3 gap-2 pt-3">
                 <div className="bg-slate-900/80 p-2.5 rounded-xl border border-slate-700/60 text-center">
                   <div className="text-[10px] text-slate-400 font-semibold">Total Rampal</div>
-                  <div className="text-sm sm:text-base font-black text-emerald-400 mt-0.5">
+                  <div className="text-sm sm:text-base font-black text-white mt-0.5">
                     {rowLoading
                       ? '...'
                       : `${rowKmsTotal.toLocaleString('id-ID', { maximumFractionDigits: 0 })} KMS`}

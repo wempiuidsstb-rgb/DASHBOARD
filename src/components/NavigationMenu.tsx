@@ -41,7 +41,7 @@ export const NavigationMenu: React.FC<NavigationMenuProps> = ({
   };
 
   return (
-    <nav className="bg-slate-950 border-b border-slate-800/90 text-white sticky top-0 z-40 shadow-lg backdrop-blur-md bg-opacity-95">
+    <nav className="bg-slate-950 border-b border-slate-800 text-white sticky top-0 z-40 shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Brand & UP3 Info */}
@@ -120,18 +120,18 @@ export const NavigationMenu: React.FC<NavigationMenuProps> = ({
               onClick={() => handleNavClick('row')}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
                 currentView === 'row'
-                  ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30'
+                  ? 'bg-slate-800 text-white border border-slate-700 shadow-md'
                   : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
               }`}
             >
-              <Trees className={`w-4 h-4 ${currentView === 'row' ? 'text-emerald-200' : 'text-emerald-400'}`} />
+              <Trees className={`w-4 h-4 ${currentView === 'row' ? 'text-blue-400' : 'text-slate-400'}`} />
               <div className="text-left flex items-center gap-1.5">
                 <span>Realisasi ROW (LM)</span>
                 <span
                   className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${
                     currentView === 'row'
-                      ? 'bg-emerald-700/80 text-emerald-100'
-                      : 'bg-slate-800 text-emerald-400'
+                      ? 'bg-slate-700 text-white'
+                      : 'bg-slate-800 text-slate-200 border border-slate-700'
                   }`}
                 >
                   {rowKmsTotal.toLocaleString('id-ID', { maximumFractionDigits: 0 })} KMS
@@ -146,7 +146,7 @@ export const NavigationMenu: React.FC<NavigationMenuProps> = ({
             <div
               className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold border ${
                 dataSource === 'live_google_sheets_csv'
-                  ? 'bg-emerald-950/80 text-emerald-300 border-emerald-800/60'
+                  ? 'bg-slate-800 text-slate-200 border-slate-700'
                   : 'bg-amber-950/80 text-amber-300 border-amber-800/60'
               }`}
               title="Sinkronisasi Data Langsung dari Google Spreadsheet"
@@ -178,7 +178,7 @@ export const NavigationMenu: React.FC<NavigationMenuProps> = ({
                   ? 'bg-slate-800 text-slate-300 border-slate-700'
                   : currentView === 'gardu'
                   ? 'bg-blue-600/30 text-blue-300 border-blue-500/40'
-                  : 'bg-emerald-600/30 text-emerald-300 border-emerald-500/40'
+                  : 'bg-slate-800 text-white border-slate-700'
               }`}
             >
               {currentView === 'landing' && 'Menu Utama'}
@@ -257,17 +257,17 @@ export const NavigationMenu: React.FC<NavigationMenuProps> = ({
             onClick={() => handleNavClick('row')}
             className={`w-full flex items-center justify-between p-3 rounded-xl text-xs font-bold transition-all min-h-[48px] ${
               currentView === 'row'
-                ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30'
+                ? 'bg-slate-800 text-white border border-slate-700 shadow-md'
                 : 'text-slate-300 hover:bg-slate-800/60'
             }`}
           >
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-emerald-600/30 text-emerald-300 flex items-center justify-center">
-                <Trees className="w-4 h-4 text-emerald-200" />
+              <div className="w-8 h-8 rounded-lg bg-slate-700 text-white flex items-center justify-center">
+                <Trees className="w-4 h-4 text-blue-400" />
               </div>
               <div className="text-left">
                 <div className="text-sm font-bold text-white">Dashboard Realisasi LM (ROW)</div>
-                <div className="text-[11px] text-slate-300">
+                <div className="text-[11px] text-slate-300 font-medium">
                   Rampal {rowKmsTotal.toLocaleString('id-ID', { maximumFractionDigits: 0 })} KMS & {rowBtgTotal.toLocaleString('id-ID')} Batang
                 </div>
               </div>

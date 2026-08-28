@@ -119,33 +119,30 @@ export const RowDashboardView: React.FC<RowDashboardViewProps> = ({
   return (
     <div className="space-y-6">
       {/* Header Banner */}
-      <div className="bento-card bg-linear-to-r from-emerald-900 via-teal-900 to-slate-900 text-white border-none p-6 sm:p-7 relative overflow-hidden">
-        <div className="absolute right-0 top-0 translate-x-12 -translate-y-12 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
-
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="space-y-1.5">
+      <div className="bento-card bg-white border-2 border-slate-300 p-6 sm:p-7 shadow-sm">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="space-y-2">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
-                <Trees className="w-3.5 h-3.5" />
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-950 border border-blue-300">
+                <Trees className="w-3.5 h-3.5 text-blue-700" />
                 REKAP UP3 &bull; Sheet REKAP UP3
               </span>
               <span
-                className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold ${
+                className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
                   dataSource === 'live_google_sheets_csv'
-                    ? 'bg-emerald-400/20 text-emerald-200 border border-emerald-400/30'
-                    : 'bg-amber-400/20 text-amber-200 border border-amber-400/30'
+                    ? 'bg-slate-100 text-slate-900 border border-slate-300'
+                    : 'bg-amber-100 text-amber-950 border border-amber-300'
                 }`}
               >
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span className="w-2 h-2 rounded-full bg-blue-600"></span>
                 {dataSource === 'live_google_sheets_csv' ? 'Google Sheets Live CSV' : 'Data Cadangan'}
               </span>
             </div>
-            <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white">
+            <h2 className="text-xl sm:text-2xl font-black tracking-tight text-slate-950">
               Dashboard Rekap Rampal & Tebang Pohon (ROW)
             </h2>
-            <p className="text-xs sm:text-sm text-emerald-100/80 max-w-2xl">
-              Monitoring pelaksanaan pemeliharaan Right-of-Way (ROW) jaringan distribusi PLN UP3 Bulukumba:
-              pemangkasan ranting pohon (KMS) dan penebangan pohon rawan tumbang (Batang).
+            <p className="text-sm sm:text-base text-slate-950 font-bold max-w-3xl leading-relaxed">
+              Monitoring pelaksanaan pemeliharaan Right-of-Way (ROW) jaringan distribusi PLN UP3 Bulukumba: pemangkasan ranting pohon (KMS) dan penebangan pohon rawan tumbang (Batang) dan analisa strategis pemeliharaan ROW.
             </p>
           </div>
 
@@ -154,14 +151,14 @@ export const RowDashboardView: React.FC<RowDashboardViewProps> = ({
             <button
               onClick={onRefresh}
               disabled={isLoading}
-              className="px-3 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs flex items-center gap-2 transition-colors border border-white/15 disabled:opacity-50"
+              className="px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold text-xs flex items-center gap-2 transition-colors border border-slate-300 disabled:opacity-50"
             >
-              <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
+              <RefreshCw className={`w-3.5 h-3.5 text-slate-800 ${isLoading ? 'animate-spin' : ''}`} />
               <span>Refresh Sheet</span>
             </button>
             <button
               onClick={handleExportCSV}
-              className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs flex items-center gap-2 transition-all shadow-md"
+              className="px-4 py-2.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-bold text-xs flex items-center gap-2 transition-all shadow-xs"
             >
               <Download className="w-3.5 h-3.5" />
               <span>Unduh CSV ({filteredRecords.length.toLocaleString('id-ID')})</span>
@@ -181,18 +178,18 @@ export const RowDashboardView: React.FC<RowDashboardViewProps> = ({
               value={filters.search}
               onChange={(e) => setFilters((prev) => ({ ...prev, search: e.target.value }))}
               placeholder="Cari section, ULP, tanggal, atau tim..."
-              className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all text-slate-800 placeholder-slate-400"
+              className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition-all text-slate-800 placeholder-slate-400"
             />
           </div>
 
           {/* Subview Toggle */}
-          <div className="inline-flex bg-slate-100 p-1 rounded-xl border border-slate-200/80 w-full sm:w-auto justify-center sm:justify-start flex-wrap gap-1">
+          <div className="inline-flex bg-slate-100 p-1 rounded-xl border border-slate-300 w-full sm:w-auto justify-center sm:justify-start flex-wrap gap-1">
             <button
               onClick={() => setActiveSubView('all')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-extrabold transition-all ${
                 activeSubView === 'all'
-                  ? 'bg-white text-emerald-700 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-slate-900 text-white shadow-xs'
+                  : 'text-slate-800 hover:text-slate-950 hover:bg-white'
               }`}
             >
               <Layers className="w-3.5 h-3.5" />
@@ -200,10 +197,10 @@ export const RowDashboardView: React.FC<RowDashboardViewProps> = ({
             </button>
             <button
               onClick={() => setActiveSubView('analysis')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-extrabold transition-all ${
                 activeSubView === 'analysis'
-                  ? 'bg-white text-emerald-700 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-slate-900 text-white shadow-xs'
+                  : 'text-slate-800 hover:text-slate-950 hover:bg-white'
               }`}
             >
               <Lightbulb className="w-3.5 h-3.5 text-amber-500" />
@@ -211,24 +208,24 @@ export const RowDashboardView: React.FC<RowDashboardViewProps> = ({
             </button>
             <button
               onClick={() => setActiveSubView('charts')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-extrabold transition-all ${
                 activeSubView === 'charts'
-                  ? 'bg-white text-emerald-700 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-slate-900 text-white shadow-xs'
+                  : 'text-slate-800 hover:text-slate-950 hover:bg-white'
               }`}
             >
-              <BarChart3 className="w-3.5 h-3.5" />
+              <BarChart3 className="w-3.5 h-3.5 text-blue-600" />
               <span>Grafik Analitik</span>
             </button>
             <button
               onClick={() => setActiveSubView('table')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-extrabold transition-all ${
                 activeSubView === 'table'
-                  ? 'bg-white text-emerald-700 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-slate-900 text-white shadow-xs'
+                  : 'text-slate-800 hover:text-slate-950 hover:bg-white'
               }`}
             >
-              <TableIcon className="w-3.5 h-3.5" />
+              <TableIcon className="w-3.5 h-3.5 text-slate-700" />
               <span>Tabel Data</span>
             </button>
           </div>
@@ -238,13 +235,13 @@ export const RowDashboardView: React.FC<RowDashboardViewProps> = ({
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3 border-t border-slate-100">
           {/* ULP Filter */}
           <div>
-            <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">
+            <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1 flex items-center gap-1">
               <Building2 className="w-3 h-3 text-slate-400" /> Unit ULP
             </label>
             <select
               value={filters.ulp}
               onChange={(e) => setFilters((prev) => ({ ...prev, ulp: e.target.value }))}
-              className="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-lg px-2.5 py-1.5 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-emerald-500"
+              className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-lg px-2.5 py-1.5 text-xs font-bold focus:outline-none focus:ring-1 focus:ring-slate-900"
             >
               <option value="ALL">Semua ULP ({ulpList.length})</option>
               {ulpList.map((u) => (
@@ -257,13 +254,13 @@ export const RowDashboardView: React.FC<RowDashboardViewProps> = ({
 
           {/* Tim Filter */}
           <div>
-            <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">
+            <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1 flex items-center gap-1">
               <Users className="w-3 h-3 text-slate-400" /> Tim Pelaksana
             </label>
             <select
               value={filters.tim}
               onChange={(e) => setFilters((prev) => ({ ...prev, tim: e.target.value }))}
-              className="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-lg px-2.5 py-1.5 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-emerald-500"
+              className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-lg px-2.5 py-1.5 text-xs font-bold focus:outline-none focus:ring-1 focus:ring-slate-900"
             >
               <option value="ALL">Semua Tim ({timList.length})</option>
               {timList.map((t) => (
@@ -276,13 +273,13 @@ export const RowDashboardView: React.FC<RowDashboardViewProps> = ({
 
           {/* Bulan Filter */}
           <div>
-            <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">
+            <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1 flex items-center gap-1">
               <Calendar className="w-3 h-3 text-slate-400" /> Bulan Pelaksanaan
             </label>
             <select
               value={filters.bulan}
               onChange={(e) => setFilters((prev) => ({ ...prev, bulan: e.target.value }))}
-              className="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-lg px-2.5 py-1.5 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-emerald-500"
+              className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-lg px-2.5 py-1.5 text-xs font-bold focus:outline-none focus:ring-1 focus:ring-slate-900"
             >
               <option value="ALL">Semua Bulan</option>
               {BULAN_OPTIONS.map((m) => (
@@ -295,7 +292,7 @@ export const RowDashboardView: React.FC<RowDashboardViewProps> = ({
 
           {/* Activity Type Filter */}
           <div>
-            <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">
+            <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1 flex items-center gap-1">
               <Filter className="w-3 h-3 text-slate-400" /> Jenis Kegiatan
             </label>
             <select
@@ -303,7 +300,7 @@ export const RowDashboardView: React.FC<RowDashboardViewProps> = ({
               onChange={(e) =>
                 setFilters((prev) => ({ ...prev, activityType: e.target.value as any }))
               }
-              className="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-lg px-2.5 py-1.5 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-emerald-500"
+              className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-lg px-2.5 py-1.5 text-xs font-bold focus:outline-none focus:ring-1 focus:ring-slate-900"
             >
               <option value="ALL">Semua (Rampal & Tebang)</option>
               <option value="RAMPAL_ONLY">Hanya Rampal (&gt;0 KMS)</option>
@@ -317,29 +314,29 @@ export const RowDashboardView: React.FC<RowDashboardViewProps> = ({
         {isFilterActive && (
           <div className="flex items-center justify-between pt-2 text-xs flex-wrap gap-2">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-slate-400 font-medium">Filter Aktif:</span>
+              <span className="text-slate-500 font-semibold">Filter Aktif:</span>
               {filters.search && (
-                <span className="bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-md font-semibold border border-emerald-200">
+                <span className="bg-slate-100 text-slate-900 px-2.5 py-1 rounded-lg font-bold border border-slate-300">
                   Cari: "{filters.search}"
                 </span>
               )}
               {filters.ulp !== 'ALL' && (
-                <span className="bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-md font-semibold border border-emerald-200">
+                <span className="bg-slate-100 text-slate-900 px-2.5 py-1 rounded-lg font-bold border border-slate-300">
                   ULP: {filters.ulp}
                 </span>
               )}
               {filters.tim !== 'ALL' && (
-                <span className="bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-md font-semibold border border-emerald-200">
+                <span className="bg-slate-100 text-slate-900 px-2.5 py-1 rounded-lg font-bold border border-slate-300">
                   Tim: {filters.tim}
                 </span>
               )}
               {filters.bulan !== 'ALL' && (
-                <span className="bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-md font-semibold border border-emerald-200">
+                <span className="bg-slate-100 text-slate-900 px-2.5 py-1 rounded-lg font-bold border border-slate-300">
                   Bulan: {filters.bulan}
                 </span>
               )}
               {filters.activityType !== 'ALL' && (
-                <span className="bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-md font-semibold border border-emerald-200">
+                <span className="bg-slate-100 text-slate-900 px-2.5 py-1 rounded-lg font-bold border border-slate-300">
                   Jenis: {filters.activityType}
                 </span>
               )}

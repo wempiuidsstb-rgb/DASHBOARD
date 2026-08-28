@@ -3,6 +3,68 @@ import { GarduRecord } from '../types';
 import L from 'leaflet';
 import { Layers, Maximize2, ExternalLink, Navigation, Search, CheckCircle2, AlertOctagon, BatteryCharging, ShieldAlert } from 'lucide-react';
 
+// Safety patch for Leaflet Canvas renderer to prevent "Cannot read properties of undefined (reading 'save')"
+if (typeof window !== 'undefined' && L && L.Canvas) {
+  const canvasProto = L.Canvas.prototype as any;
+  if (!canvasProto.__ctx_save_patched__) {
+    canvasProto.__ctx_save_patched__ = true;
+
+    const originalClear = canvasProto._clear;
+    canvasProto._clear = function () {
+      if (!this._ctx || !this._container) return;
+      try {
+        originalClear.call(this);
+      } catch (_) {
+        // Silently catch context destroyed or disposed race condition
+      }
+    };
+
+    const originalDraw = canvasProto._draw;
+    canvasProto._draw = function () {
+      if (!this._ctx || !this._container) return;
+      try {
+        originalDraw.call(this);
+      } catch (_) {
+        // Silently catch context destroyed or disposed race condition
+      }
+    };
+
+    const originalUpdateCircle = canvasProto._updateCircle;
+    canvasProto._updateCircle = function (layer: any) {
+      if (!this._ctx || !this._drawing || !layer || (layer._empty && layer._empty())) return;
+      try {
+        originalUpdateCircle.call(this, layer);
+      } catch (_) {
+        // Silently catch context destroyed or disposed race condition
+      }
+    };
+
+    const originalUpdatePoly = canvasProto._updatePoly;
+    canvasProto._updatePoly = function (layer: any, closed: boolean) {
+      if (!this._ctx || !this._drawing || !layer) return;
+      try {
+        originalUpdatePoly.call(this, layer, closed);
+      } catch (_) {
+        // Silently catch context destroyed or disposed race condition
+      }
+    };
+
+    const originalDestroyContainer = canvasProto._destroyContainer;
+    canvasProto._destroyContainer = function () {
+      if (this._redrawRequest) {
+        try {
+          L.Util.cancelAnimFrame(this._redrawRequest);
+        } catch (_) {}
+        this._redrawRequest = null;
+      }
+      this._drawing = false;
+      try {
+        originalDestroyContainer.call(this);
+      } catch (_) {}
+    };
+  }
+}
+
 interface MapViewProps {
   records: GarduRecord[];
   onSelectGardu: (gardu: GarduRecord) => void;
@@ -53,7 +115,7 @@ export const MapView: React.FC<MapViewProps> = ({
       preferCanvas: true,
     });
 
-    const canvas = L.canvas({ padding: 0.5 });
+    const canvas = L.canvas({ padding: 0.5 }).addTo(map);
     canvasRendererRef.current = canvas;
 
     const markersLayer = L.layerGroup().addTo(map);
@@ -77,6 +139,18 @@ export const MapView: React.FC<MapViewProps> = ({
           highlightCircleRef.current.remove();
         } catch (_) {}
         highlightCircleRef.current = null;
+      }
+      if (markersLayerRef.current) {
+        try {
+          markersLayerRef.current.clearLayers();
+        } catch (_) {}
+        markersLayerRef.current = null;
+      }
+      if (canvasRendererRef.current) {
+        try {
+          canvasRendererRef.current.remove();
+        } catch (_) {}
+        canvasRendererRef.current = null;
       }
       try {
         map.stop();
@@ -266,6 +340,7 @@ export const MapView: React.FC<MapViewProps> = ({
       } else {
         try {
           highlightCircleRef.current = L.circleMarker([target.lat, target.lng], {
+            renderer: canvasRendererRef.current || undefined,
             radius: 14,
             fillColor: 'transparent',
             color: '#f59e0b',
@@ -330,20 +405,20 @@ export const MapView: React.FC<MapViewProps> = ({
       {/* Floating Top Controls: Basemap & Quick Search */}
       <div className="absolute top-4 left-4 right-4 sm:right-auto z-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
         {/* Quick Search on Map */}
-        <div className="relative w-full sm:w-64 bg-white/95 backdrop-blur-md rounded-xl shadow-sm border border-slate-200">
+        <div className="relative w-full sm:w-64 bg-white rounded-xl shadow-md border border-slate-300">
           <div className="flex items-center px-3.5 py-2">
-            <Search className="w-4 h-4 text-slate-400 mr-2 shrink-0" />
+            <Search className="w-4 h-4 text-slate-500 mr-2 shrink-0" />
             <input
               type="text"
               value={mapSearch}
               onChange={handleMapSearch}
               placeholder="Cari gardu di peta..."
-              className="w-full text-xs bg-transparent focus:outline-none text-slate-900 placeholder-slate-400 font-medium"
+              className="w-full text-xs bg-transparent focus:outline-none text-slate-900 placeholder-slate-500 font-semibold"
             />
           </div>
 
           {searchMatches.length > 0 && (
-            <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-xl shadow-xl border border-slate-200 divide-y divide-slate-100 overflow-hidden max-h-48 overflow-y-auto">
+            <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-xl shadow-xl border border-slate-300 divide-y divide-slate-100 overflow-hidden max-h-48 overflow-y-auto">
               {searchMatches.map((m) => (
                 <button
                   key={m.id}
@@ -352,7 +427,7 @@ export const MapView: React.FC<MapViewProps> = ({
                 >
                   <div>
                     <strong className="text-slate-900 font-bold">{m.gardu}</strong>
-                    <span className="text-slate-500 ml-1.5 font-normal">({m.ulp})</span>
+                    <span className="text-slate-600 ml-1.5 font-normal">({m.ulp})</span>
                   </div>
                   <span
                     className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
@@ -372,11 +447,11 @@ export const MapView: React.FC<MapViewProps> = ({
         </div>
 
         {/* Basemap switcher */}
-        <div className="flex items-center bg-white/95 backdrop-blur-md p-1 rounded-xl shadow-sm border border-slate-200 text-xs font-semibold">
+        <div className="flex items-center bg-white p-1 rounded-xl shadow-md border border-slate-300 text-xs font-semibold">
           <button
             onClick={() => setBasemap('streets')}
             className={`px-3 py-1.5 rounded-lg transition-all ${
-              basemap === 'streets' ? 'bg-slate-900 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+              basemap === 'streets' ? 'bg-slate-900 text-white shadow-xs' : 'text-slate-700 hover:text-slate-950'
             }`}
           >
             Peta Jalan
@@ -384,7 +459,7 @@ export const MapView: React.FC<MapViewProps> = ({
           <button
             onClick={() => setBasemap('satellite')}
             className={`px-3 py-1.5 rounded-lg transition-all ${
-              basemap === 'satellite' ? 'bg-slate-900 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+              basemap === 'satellite' ? 'bg-slate-900 text-white shadow-xs' : 'text-slate-700 hover:text-slate-950'
             }`}
           >
             Satelit
@@ -392,7 +467,7 @@ export const MapView: React.FC<MapViewProps> = ({
           <button
             onClick={() => setBasemap('carto')}
             className={`px-3 py-1.5 rounded-lg transition-all ${
-              basemap === 'carto' ? 'bg-slate-900 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+              basemap === 'carto' ? 'bg-slate-900 text-white shadow-xs' : 'text-slate-700 hover:text-slate-950'
             }`}
           >
             Terang
@@ -403,7 +478,7 @@ export const MapView: React.FC<MapViewProps> = ({
         <button
           onClick={handleFitAll}
           title="Fokuskan Semua Gardu"
-          className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 bg-white/95 backdrop-blur-md rounded-xl shadow-sm border border-slate-200 text-xs font-semibold text-slate-700 hover:text-slate-900 hover:bg-slate-50 transition-colors"
+          className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 bg-white rounded-xl shadow-md border border-slate-300 text-xs font-bold text-slate-800 hover:text-slate-950 hover:bg-slate-50 transition-colors"
         >
           <Maximize2 className="w-3.5 h-3.5" />
           <span>Fokus Wilayah</span>
@@ -411,7 +486,7 @@ export const MapView: React.FC<MapViewProps> = ({
       </div>
 
       {/* Floating Legend Bottom Right - Bento Card */}
-      <div className="absolute bottom-5 right-4 z-10 bg-white/95 backdrop-blur-md p-4 rounded-2xl shadow-lg border border-slate-200 text-xs space-y-2.5 max-w-xs">
+      <div className="absolute bottom-5 right-4 z-10 bg-white p-4 rounded-2xl shadow-xl border border-slate-300 text-xs space-y-2.5 max-w-xs">
         <div className="flex items-center justify-between border-b border-slate-100 pb-2">
           <span className="stat-label text-slate-800">Status Beban Gardu</span>
           <span className="text-[11px] font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded-full">

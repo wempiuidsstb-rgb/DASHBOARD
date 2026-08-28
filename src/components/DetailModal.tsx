@@ -46,6 +46,8 @@ export const DetailModal: React.FC<DetailModalProps> = ({
     setIsExporting(true);
     try {
       exportSingleGarduPDF(gardu);
+    } catch (err) {
+      console.error('Gagal mengekspor PDF gardu:', err);
     } finally {
       setIsExporting(false);
     }
@@ -57,7 +59,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-150"
+      className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/80 flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-150"
       onClick={onClose}
     >
       <div

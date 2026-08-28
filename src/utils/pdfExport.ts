@@ -4,22 +4,34 @@ import autoTable from 'jspdf-autotable';
 import { GarduRecord, FilterState, DashboardMetrics } from '../types';
 
 function createPdfInstance(options: any) {
-  const Constructor: any =
-    (typeof jsPDFNamed === 'function' ? jsPDFNamed : null) ||
-    (typeof (jsPDFModule as any).default === 'function' ? (jsPDFModule as any).default : null) ||
-    (typeof (jsPDFModule as any).jsPDF === 'function' ? (jsPDFModule as any).jsPDF : null) ||
-    (typeof window !== 'undefined' && (window as any).jspdf?.jsPDF ? (window as any).jspdf.jsPDF : null) ||
-    jsPDFNamed;
-  return new Constructor(options);
+  try {
+    const Constructor: any =
+      (typeof jsPDFNamed === 'function' ? jsPDFNamed : null) ||
+      (typeof (jsPDFModule as any).default === 'function' ? (jsPDFModule as any).default : null) ||
+      (typeof (jsPDFModule as any).jsPDF === 'function' ? (jsPDFModule as any).jsPDF : null) ||
+      (typeof window !== 'undefined' && (window as any).jspdf?.jsPDF ? (window as any).jspdf.jsPDF : null) ||
+      jsPDFNamed;
+    if (typeof Constructor === 'function') {
+      return new Constructor(options);
+    }
+  } catch (e) {
+    console.error('Gagal menginisialisasi jsPDF constructor:', e);
+  }
+  return null;
 }
 
 function applyAutoTable(doc: any, options: any) {
-  if (typeof autoTable === 'function') {
-    autoTable(doc, options);
-  } else if (typeof (autoTable as any)?.default === 'function') {
-    (autoTable as any).default(doc, options);
-  } else if (typeof (doc as any)?.autoTable === 'function') {
-    (doc as any).autoTable(options);
+  if (!doc) return;
+  try {
+    if (typeof autoTable === 'function') {
+      autoTable(doc, options);
+    } else if (typeof (autoTable as any)?.default === 'function') {
+      (autoTable as any).default(doc, options);
+    } else if (typeof (doc as any)?.autoTable === 'function') {
+      (doc as any).autoTable(options);
+    }
+  } catch (e) {
+    console.error('Gagal menerapkan autoTable pada PDF:', e);
   }
 }
 
@@ -37,6 +49,11 @@ export function exportToPDF({ records, filters, metrics, filename }: PDFExportOp
     unit: 'mm',
     format: 'a4',
   });
+
+  if (!doc) {
+    console.error('Dokumen PDF tidak dapat diinisialisasi.');
+    return;
+  }
 
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
@@ -309,7 +326,15 @@ export function exportToPDF({ records, filters, metrics, filename }: PDFExportOp
 
   // Save document
   const defaultFilename = `laporan_pengukuran_gardu_PLN_UP3_Bulukumba_${new Date().toISOString().slice(0, 10)}.pdf`;
-  doc.save(filename || defaultFilename);
+  if (doc && typeof (doc as any).save === 'function') {
+    try {
+      (doc as any).save(filename || defaultFilename);
+    } catch (err) {
+      console.error('Error saat menyimpan dokumen PDF:', err);
+    }
+  } else {
+    console.error('Dokumen PDF tidak valid atau fungsi save tidak tersedia.');
+  }
 }
 
 export function exportSingleGarduPDF(gardu: GarduRecord): void {
@@ -318,6 +343,11 @@ export function exportSingleGarduPDF(gardu: GarduRecord): void {
     unit: 'mm',
     format: 'a4',
   });
+
+  if (!doc) {
+    console.error('Dokumen PDF gardu tidak dapat diinisialisasi.');
+    return;
+  }
 
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
@@ -468,5 +498,13 @@ export function exportSingleGarduPDF(gardu: GarduRecord): void {
   doc.setTextColor(148, 163, 184);
   doc.text('Dokumen Resmi Hasil Pengukuran Gardu Distribusi • PT PLN (Persero) UP3 Bulukumba', 14, pageHeight - 6);
 
-  doc.save(`laporan_gardu_${gardu.gardu}_${new Date().toISOString().slice(0, 10)}.pdf`);
+  if (doc && typeof (doc as any).save === 'function') {
+    try {
+      (doc as any).save(`laporan_gardu_${gardu.gardu}_${new Date().toISOString().slice(0, 10)}.pdf`);
+    } catch (err) {
+      console.error('Error saat menyimpan dokumen PDF gardu:', err);
+    }
+  } else {
+    console.error('Dokumen PDF tidak valid atau fungsi save tidak tersedia.');
+  }
 }

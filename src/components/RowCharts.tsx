@@ -109,8 +109,8 @@ export const RowCharts: React.FC<RowChartsProps> = ({
     <div className="space-y-6">
       {/* Visual Filter Pill Tabs */}
       <div className="flex flex-wrap items-center justify-between gap-3 bg-white p-3 rounded-2xl border border-slate-200 shadow-xs">
-        <div className="flex items-center gap-2 text-xs font-bold text-slate-700 px-2">
-          <Activity className="w-4 h-4 text-emerald-600" />
+        <div className="flex items-center gap-2 text-xs font-bold text-slate-800 px-2">
+          <Activity className="w-4 h-4 text-slate-700" />
           <span>Tampilan Grafik:</span>
         </div>
         <div className="flex flex-wrap gap-1.5">
@@ -120,18 +120,18 @@ export const RowCharts: React.FC<RowChartsProps> = ({
             className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
               chartViewFilter === 'ALL'
                 ? 'bg-slate-900 text-white shadow-xs'
-                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
             }`}
           >
-            Semua Grafik ({chartViewFilter === 'ALL' ? '6' : '6'})
+            Semua Grafik (6)
           </button>
           <button
             type="button"
             onClick={() => setChartViewFilter('ULP')}
             className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
               chartViewFilter === 'ULP'
-                ? 'bg-emerald-600 text-white shadow-xs'
-                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                ? 'bg-slate-900 text-white shadow-xs'
+                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
             }`}
           >
             Analisis ULP
@@ -141,8 +141,8 @@ export const RowCharts: React.FC<RowChartsProps> = ({
             onClick={() => setChartViewFilter('TIM')}
             className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
               chartViewFilter === 'TIM'
-                ? 'bg-indigo-600 text-white shadow-xs'
-                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                ? 'bg-slate-900 text-white shadow-xs'
+                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
             }`}
           >
             Produktivitas Regu
@@ -152,8 +152,8 @@ export const RowCharts: React.FC<RowChartsProps> = ({
             onClick={() => setChartViewFilter('SECTION')}
             className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
               chartViewFilter === 'SECTION'
-                ? 'bg-amber-600 text-white shadow-xs'
-                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                ? 'bg-slate-900 text-white shadow-xs'
+                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
             }`}
           >
             Hotspot Section
@@ -169,14 +169,14 @@ export const RowCharts: React.FC<RowChartsProps> = ({
             <div className="flex items-center justify-between pb-4 border-b border-slate-100">
               <div>
                 <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                  <MapPin className="w-4 h-4 text-emerald-600" />
+                  <MapPin className="w-4 h-4 text-slate-700" />
                   Realisasi Rampal (KMS) & Tebang (Batang) per ULP
                 </h3>
                 <p className="text-xs text-slate-500 mt-0.5">
                   Perbandingan volume pemangkasan dan penebangan pohon di 7 ULP
                 </p>
               </div>
-              <span className="text-xs font-semibold text-slate-400 bg-slate-100 px-2.5 py-1 rounded-lg">
+              <span className="text-xs font-bold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200">
                 7 ULP
               </span>
             </div>
@@ -187,20 +187,20 @@ export const RowCharts: React.FC<RowChartsProps> = ({
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                   <XAxis
                     dataKey="name"
-                    tick={{ fontSize: 11, fill: '#64748b' }}
+                    tick={{ fontSize: 11, fill: '#334155', fontWeight: 600 }}
                     interval={0}
                     angle={-20}
                     textAnchor="end"
                   />
                   <YAxis
                     yAxisId="left"
-                    tick={{ fontSize: 11, fill: '#10b981' }}
+                    tick={{ fontSize: 11, fill: '#0f172a', fontWeight: 600 }}
                     tickFormatter={(v) => `${v}k`}
                   />
                   <YAxis
                     yAxisId="right"
                     orientation="right"
-                    tick={{ fontSize: 11, fill: '#f59e0b' }}
+                    tick={{ fontSize: 11, fill: '#0f172a', fontWeight: 600 }}
                     tickFormatter={(v) => `${v}`}
                   />
                   <Tooltip
@@ -212,21 +212,21 @@ export const RowCharts: React.FC<RowChartsProps> = ({
                             <div className="font-bold text-slate-900 border-b border-slate-100 pb-1">
                               {data.fullName}
                             </div>
-                            <div className="flex justify-between items-center text-emerald-700">
-                              <span className="flex items-center gap-1">
-                                <Scissors className="w-3 h-3" /> Rampal:
+                            <div className="flex justify-between items-center text-slate-800">
+                              <span className="flex items-center gap-1 text-slate-600 font-semibold">
+                                <Scissors className="w-3.5 h-3.5 text-slate-700" /> Rampal:
                               </span>
-                              <span className="font-bold">{data.rampalKms.toLocaleString()} KMS</span>
+                              <span className="font-extrabold text-slate-900">{data.rampalKms.toLocaleString()} KMS</span>
                             </div>
-                            <div className="flex justify-between items-center text-amber-700">
-                              <span className="flex items-center gap-1">
-                                <TreePine className="w-3 h-3" /> Tebang:
+                            <div className="flex justify-between items-center text-slate-800">
+                              <span className="flex items-center gap-1 text-slate-600 font-semibold">
+                                <TreePine className="w-3.5 h-3.5 text-amber-700" /> Tebang:
                               </span>
-                              <span className="font-bold">{data.tebangBtg.toLocaleString()} Batang</span>
+                              <span className="font-extrabold text-slate-900">{data.tebangBtg.toLocaleString()} Batang</span>
                             </div>
-                            <div className="flex justify-between items-center text-slate-500 pt-1 border-t border-slate-100">
+                            <div className="flex justify-between items-center text-slate-600 pt-1 border-t border-slate-100">
                               <span>Total Giat:</span>
-                              <span className="font-semibold">{data.totalGiat.toLocaleString()}x</span>
+                              <span className="font-bold text-slate-900">{data.totalGiat.toLocaleString()}x</span>
                             </div>
                           </div>
                         );
@@ -270,14 +270,14 @@ export const RowCharts: React.FC<RowChartsProps> = ({
             <div className="flex items-center justify-between pb-4 border-b border-slate-100">
               <div>
                 <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-blue-600" />
+                  <Calendar className="w-4 h-4 text-slate-700" />
                   Tren Realisasi Bulanan (Januari - Agustus)
                 </h3>
                 <p className="text-xs text-slate-500 mt-0.5">
                   Kurva dinamis intensitas pemangkasan dan penebangan sepanjang tahun
                 </p>
               </div>
-              <span className="text-xs font-semibold text-slate-400 bg-slate-100 px-2.5 py-1 rounded-lg">
+              <span className="text-xs font-bold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200">
                 Bulanan
               </span>
             </div>
@@ -289,16 +289,16 @@ export const RowCharts: React.FC<RowChartsProps> = ({
                   margin={{ top: 10, right: 10, left: -10, bottom: 20 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                  <XAxis dataKey="bulan" tick={{ fontSize: 11, fill: '#64748b' }} />
+                  <XAxis dataKey="bulan" tick={{ fontSize: 11, fill: '#334155', fontWeight: 600 }} />
                   <YAxis
                     yAxisId="left"
-                    tick={{ fontSize: 11, fill: '#2563eb' }}
+                    tick={{ fontSize: 11, fill: '#0f172a', fontWeight: 600 }}
                     tickFormatter={(v) => `${v}`}
                   />
                   <YAxis
                     yAxisId="right"
                     orientation="right"
-                    tick={{ fontSize: 11, fill: '#f59e0b' }}
+                    tick={{ fontSize: 11, fill: '#0f172a', fontWeight: 600 }}
                     tickFormatter={(v) => `${v}`}
                   />
                   <Tooltip
@@ -310,17 +310,17 @@ export const RowCharts: React.FC<RowChartsProps> = ({
                             <div className="font-bold text-slate-900 border-b border-slate-100 pb-1">
                               Bulan: {data.bulan}
                             </div>
-                            <div className="flex justify-between items-center text-blue-700">
-                              <span>Rampal (KMS):</span>
-                              <span className="font-bold">{data.kms.toLocaleString()}</span>
+                            <div className="flex justify-between items-center text-slate-800">
+                              <span className="text-slate-600 font-semibold">Rampal (KMS):</span>
+                              <span className="font-extrabold text-slate-900">{data.kms.toLocaleString()}</span>
                             </div>
-                            <div className="flex justify-between items-center text-amber-700">
-                              <span>Tebang (Batang):</span>
-                              <span className="font-bold">{data.btg.toLocaleString()}</span>
+                            <div className="flex justify-between items-center text-slate-800">
+                              <span className="text-slate-600 font-semibold">Tebang (Batang):</span>
+                              <span className="font-extrabold text-slate-900">{data.btg.toLocaleString()}</span>
                             </div>
-                            <div className="flex justify-between items-center text-slate-500 pt-1 border-t border-slate-100">
+                            <div className="flex justify-between items-center text-slate-600 pt-1 border-t border-slate-100">
                               <span>Total Giat:</span>
-                              <span className="font-semibold">{data.count.toLocaleString()}x</span>
+                              <span className="font-bold text-slate-900">{data.count.toLocaleString()}x</span>
                             </div>
                           </div>
                         );
@@ -369,14 +369,14 @@ export const RowCharts: React.FC<RowChartsProps> = ({
             <div className="flex items-center justify-between pb-4 border-b border-slate-100">
               <div>
                 <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                  <TrendingUp className="w-4 h-4 text-teal-600" />
+                  <TrendingUp className="w-4 h-4 text-slate-700" />
                   Profil Keseimbangan Beban ROW 7 ULP (Radar Chart)
                 </h3>
                 <p className="text-xs text-slate-500 mt-0.5">
                   Visualisasi normalisasi multi-dimensi (Rampal, Tebang, & Frekuensi Kegiatan)
                 </p>
               </div>
-              <span className="text-xs font-semibold text-teal-700 bg-teal-50 px-2.5 py-1 rounded-lg border border-teal-200">
+              <span className="text-xs font-bold text-slate-800 bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-300">
                 Multi-Dimensi
               </span>
             </div>
@@ -384,27 +384,27 @@ export const RowCharts: React.FC<RowChartsProps> = ({
             <div className="h-72 mt-3">
               <ResponsiveContainer width="100%" height="100%">
                 <RadarChart outerRadius="75%" data={radarData}>
-                  <PolarGrid stroke="#e2e8f0" />
-                  <PolarAngleAxis dataKey="subject" tick={{ fontSize: 11, fill: '#475569', fontWeight: 600 }} />
-                  <PolarRadiusAxis angle={30} domain={[0, 100]} tick={{ fontSize: 9, fill: '#94a3b8' }} />
+                  <PolarGrid stroke="#cbd5e1" />
+                  <PolarAngleAxis dataKey="subject" tick={{ fontSize: 11, fill: '#0f172a', fontWeight: 700 }} />
+                  <PolarRadiusAxis angle={30} domain={[0, 100]} tick={{ fontSize: 9, fill: '#475569', fontWeight: 600 }} />
                   <Radar
                     name="Skor Rampal"
                     dataKey="Skor Rampal"
-                    stroke="#10b981"
+                    stroke="#059669"
                     fill="#10b981"
                     fillOpacity={0.4}
                   />
                   <Radar
                     name="Skor Tebang"
                     dataKey="Skor Tebang"
-                    stroke="#f59e0b"
+                    stroke="#d97706"
                     fill="#f59e0b"
                     fillOpacity={0.3}
                   />
                   <Radar
                     name="Skor Giat"
                     dataKey="Skor Giat"
-                    stroke="#3b82f6"
+                    stroke="#2563eb"
                     fill="#3b82f6"
                     fillOpacity={0.25}
                   />
@@ -413,7 +413,7 @@ export const RowCharts: React.FC<RowChartsProps> = ({
                     height={30}
                     iconType="circle"
                     formatter={(value) => (
-                      <span className="text-xs text-slate-600 font-medium mr-2">{value}</span>
+                      <span className="text-xs text-slate-800 font-semibold mr-2">{value}</span>
                     )}
                   />
                   <Tooltip
@@ -421,21 +421,21 @@ export const RowCharts: React.FC<RowChartsProps> = ({
                       if (active && payload && payload.length) {
                         const d = payload[0].payload;
                         return (
-                          <div className="bg-white border border-slate-200 shadow-xl rounded-xl p-3 text-xs space-y-1 min-w-[190px]">
+                          <div className="bg-white border border-slate-200 shadow-xl rounded-xl p-3 text-xs space-y-1.5 min-w-[190px]">
                             <div className="font-bold text-slate-900 border-b border-slate-100 pb-1">
                               ULP {d.subject}
                             </div>
-                            <div className="flex justify-between text-emerald-700">
-                              <span>Realisasi Rampal:</span>
-                              <span className="font-bold">{d.kmsReal.toLocaleString()} KMS</span>
+                            <div className="flex justify-between text-slate-800">
+                              <span className="text-slate-600 font-semibold">Realisasi Rampal:</span>
+                              <span className="font-extrabold text-slate-900">{d.kmsReal.toLocaleString()} KMS</span>
                             </div>
-                            <div className="flex justify-between text-amber-700">
-                              <span>Pohon Tebang:</span>
-                              <span className="font-bold">{d.btgReal.toLocaleString()} Batang</span>
+                            <div className="flex justify-between text-slate-800">
+                              <span className="text-slate-600 font-semibold">Pohon Tebang:</span>
+                              <span className="font-extrabold text-slate-900">{d.btgReal.toLocaleString()} Batang</span>
                             </div>
-                            <div className="flex justify-between text-blue-700">
-                              <span>Total Kegiatan:</span>
-                              <span className="font-bold">{d.countReal.toLocaleString()}x</span>
+                            <div className="flex justify-between text-slate-800">
+                              <span className="text-slate-600 font-semibold">Total Kegiatan:</span>
+                              <span className="font-extrabold text-slate-900">{d.countReal.toLocaleString()}x</span>
                             </div>
                           </div>
                         );
@@ -453,14 +453,14 @@ export const RowCharts: React.FC<RowChartsProps> = ({
             <div className="flex items-center justify-between pb-4 border-b border-slate-100">
               <div>
                 <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                  <Award className="w-4 h-4 text-indigo-600" />
+                  <Award className="w-4 h-4 text-slate-700" />
                   Produktivitas Rata-rata per Kegiatan (KMS/Giat)
                 </h3>
                 <p className="text-xs text-slate-500 mt-0.5">
                   Efisiensi perampalan rata-rata yang dicapai regu dalam sekali turun ke lapangan
                 </p>
               </div>
-              <span className="text-xs font-semibold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-200">
+              <span className="text-xs font-bold text-slate-800 bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-300">
                 Efisiensi Regu
               </span>
             </div>
@@ -473,11 +473,11 @@ export const RowCharts: React.FC<RowChartsProps> = ({
                   margin={{ top: 10, right: 30, left: 80, bottom: 10 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f1f5f9" />
-                  <XAxis type="number" tick={{ fontSize: 11, fill: '#64748b' }} unit=" KMS" />
+                  <XAxis type="number" tick={{ fontSize: 11, fill: '#0f172a', fontWeight: 600 }} unit=" KMS" />
                   <YAxis
                     type="category"
                     dataKey="name"
-                    tick={{ fontSize: 11, fill: '#334155', fontWeight: 600 }}
+                    tick={{ fontSize: 11, fill: '#0f172a', fontWeight: 700 }}
                     width={80}
                   />
                   <Tooltip
@@ -489,17 +489,17 @@ export const RowCharts: React.FC<RowChartsProps> = ({
                             <div className="font-bold text-slate-900 border-b border-slate-100 pb-1">
                               Tim: {data.name}
                             </div>
-                            <div className="flex justify-between items-center text-indigo-700">
-                              <span>Output per Giat:</span>
-                              <span className="font-bold">{data.kmsPerGiat} KMS/giat</span>
+                            <div className="flex justify-between items-center text-slate-800">
+                              <span className="text-slate-600 font-semibold">Output per Giat:</span>
+                              <span className="font-extrabold text-slate-900">{data.kmsPerGiat} KMS/giat</span>
                             </div>
-                            <div className="flex justify-between items-center text-amber-700">
-                              <span>Tebang per Giat:</span>
-                              <span className="font-bold">{data.btgPerGiat} btg/giat</span>
+                            <div className="flex justify-between items-center text-slate-800">
+                              <span className="text-slate-600 font-semibold">Tebang per Giat:</span>
+                              <span className="font-extrabold text-slate-900">{data.btgPerGiat} btg/giat</span>
                             </div>
-                            <div className="flex justify-between items-center text-slate-500 pt-1 border-t border-slate-100">
+                            <div className="flex justify-between items-center text-slate-600 pt-1 border-t border-slate-100">
                               <span>Total Realisasi:</span>
-                              <span className="font-semibold">{data.kms.toLocaleString()} KMS</span>
+                              <span className="font-bold text-slate-900">{data.kms.toLocaleString()} KMS</span>
                             </div>
                           </div>
                         );
@@ -510,7 +510,7 @@ export const RowCharts: React.FC<RowChartsProps> = ({
                   <Bar
                     dataKey="kmsPerGiat"
                     name="KMS per Giat"
-                    fill="#4f46e5"
+                    fill="#334155"
                     radius={[0, 4, 4, 0]}
                     barSize={16}
                   />
@@ -529,7 +529,7 @@ export const RowCharts: React.FC<RowChartsProps> = ({
             <div className="flex items-center justify-between pb-4 border-b border-slate-100">
               <div>
                 <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                  <Users className="w-4 h-4 text-indigo-600" />
+                  <Users className="w-4 h-4 text-slate-700" />
                   Distribusi Tim Pelaksana
                 </h3>
                 <p className="text-xs text-slate-500 mt-0.5">Persentase eksekusi kegiatan ROW</p>
@@ -559,17 +559,17 @@ export const RowCharts: React.FC<RowChartsProps> = ({
                         return (
                           <div className="bg-white border border-slate-200 shadow-xl rounded-xl p-2.5 text-xs space-y-1 min-w-[170px]">
                             <div className="font-bold text-slate-900">{data.name}</div>
-                            <div className="flex justify-between text-slate-600">
+                            <div className="flex justify-between text-slate-700">
                               <span>Kegiatan:</span>
-                              <span className="font-semibold">{data.value.toLocaleString()}</span>
+                              <span className="font-bold text-slate-900">{data.value.toLocaleString()}</span>
                             </div>
-                            <div className="flex justify-between text-indigo-700">
+                            <div className="flex justify-between text-slate-700">
                               <span>Porsi:</span>
-                              <span className="font-bold">{data.percentage}%</span>
+                              <span className="font-extrabold text-slate-900">{data.percentage}%</span>
                             </div>
-                            <div className="flex justify-between text-emerald-700">
+                            <div className="flex justify-between text-slate-700">
                               <span>Rampal:</span>
-                              <span className="font-bold">{data.kms.toLocaleString()} KMS</span>
+                              <span className="font-extrabold text-slate-900">{data.kms.toLocaleString()} KMS</span>
                             </div>
                           </div>
                         );
@@ -591,11 +591,11 @@ export const RowCharts: React.FC<RowChartsProps> = ({
                 >
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: t.color }}></span>
-                    <span className="font-semibold text-slate-700">{t.name}</span>
+                    <span className="font-bold text-slate-900">{t.name}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-slate-400">{t.value.toLocaleString()} giat</span>
-                    <span className="font-bold text-slate-900 bg-slate-100 px-1.5 py-0.5 rounded">
+                    <span className="text-slate-600 font-medium">{t.value.toLocaleString()} giat</span>
+                    <span className="font-bold text-slate-900 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-300">
                       {t.percentage}%
                     </span>
                   </div>
@@ -609,14 +609,14 @@ export const RowCharts: React.FC<RowChartsProps> = ({
             <div className="flex items-center justify-between pb-4 border-b border-slate-100">
               <div>
                 <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                  <Award className="w-4 h-4 text-amber-500" />
+                  <Award className="w-4 h-4 text-slate-700" />
                   Top 10 Jalur / Section Paling Intensif ROW
                 </h3>
                 <p className="text-xs text-slate-500 mt-0.5">
                   Section penyulang dengan volume pembersihan jaringan transmisi/distribusi tertinggi
                 </p>
               </div>
-              <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg">
+              <span className="text-xs font-bold text-slate-800 bg-slate-100 border border-slate-300 px-2.5 py-1 rounded-lg">
                 KMS Tertinggi
               </span>
             </div>
@@ -629,11 +629,11 @@ export const RowCharts: React.FC<RowChartsProps> = ({
                   margin={{ top: 5, right: 30, left: 100, bottom: 5 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f1f5f9" />
-                  <XAxis type="number" tick={{ fontSize: 11, fill: '#64748b' }} unit=" KMS" />
+                  <XAxis type="number" tick={{ fontSize: 11, fill: '#0f172a', fontWeight: 600 }} unit=" KMS" />
                   <YAxis
                     type="category"
                     dataKey="name"
-                    tick={{ fontSize: 11, fill: '#334155', fontWeight: 500 }}
+                    tick={{ fontSize: 11, fill: '#0f172a', fontWeight: 600 }}
                     width={100}
                   />
                   <Tooltip
@@ -645,18 +645,18 @@ export const RowCharts: React.FC<RowChartsProps> = ({
                             <div className="font-bold text-slate-900 border-b border-slate-100 pb-1">
                               {data.fullName}
                             </div>
-                            <div className="text-slate-500">Unit: {data.ulp}</div>
-                            <div className="flex justify-between items-center text-emerald-700">
-                              <span>Panjang Rampal:</span>
-                              <span className="font-bold">{data.rampalKms.toLocaleString()} KMS</span>
+                            <div className="text-slate-600 font-medium">Unit: {data.ulp}</div>
+                            <div className="flex justify-between items-center text-slate-800">
+                              <span className="text-slate-600 font-semibold">Panjang Rampal:</span>
+                              <span className="font-extrabold text-slate-900">{data.rampalKms.toLocaleString()} KMS</span>
                             </div>
-                            <div className="flex justify-between items-center text-amber-700">
-                              <span>Pohon Ditebang:</span>
-                              <span className="font-bold">{data.tebangBtg.toLocaleString()} Batang</span>
+                            <div className="flex justify-between items-center text-slate-800">
+                              <span className="text-slate-600 font-semibold">Pohon Ditebang:</span>
+                              <span className="font-extrabold text-slate-900">{data.tebangBtg.toLocaleString()} Batang</span>
                             </div>
-                            <div className="flex justify-between items-center text-slate-500 pt-1 border-t border-slate-100">
+                            <div className="flex justify-between items-center text-slate-600 pt-1 border-t border-slate-100">
                               <span>Frekuensi Eksekusi:</span>
-                              <span className="font-semibold">{data.count.toLocaleString()} Kali</span>
+                              <span className="font-bold text-slate-900">{data.count.toLocaleString()} Kali</span>
                             </div>
                           </div>
                         );
